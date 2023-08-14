@@ -25,42 +25,48 @@ fun_eqvl_equivalence <- function(
   )
 
   stopifnot(
-    "'dbl_scaling' must be numeric." =
-      is.numeric(dbl_scaling)
+    "'dbl_scaling' must be a non-negative number." =
+      all(
+        is.numeric(dbl_scaling)
+        , dbl_scaling >= 0
+      )
   )
 
   # Normalize data to percentage scale
-  if(!all(
+  # Normalize by upper bound, if any
+  if(length(dbl_scale_ub)){
+
+    dbl_var /
+      dbl_scale_ub[[1]] ->
+      dbl_var
+
+  } else if(!all(
     max(dbl_var, na.rm = T) <= 1,
     min(dbl_var, na.rm = T) >= 0
   )){
 
-    # Normalize by upper bound, if any
-    if(length(dbl_scale_ub)){
-
-      dbl_var /
-        dbl_scale_ub ->
+    # Normalize by maxima
+    dbl_var /
+      max(
         dbl_var
-
-    } else {
-
-      # Normalize by maxima
-      dbl_var /
-        max(
-          dbl_var
-          , na.rm = T
-        ) -> dbl_var
-
-    }
+        , na.rm = T
+      ) -> dbl_var
 
   }
 
   # Calculate equivalence
   dbl_var ^
     (
-      (1 / dbl_var) ^
-        (dbl_scaling / dbl_var)
+      (1 / dbl_var) ^ (
+        dbl_scaling[[1]] /
+          dbl_var
+      )
     ) -> dbl_equivalence
+
+  # Truncate NA's
+  dbl_equivalence[
+    is.na(dbl_equivalence)
+  ] <- 0
 
   # Output
   return(dbl_equivalence)
