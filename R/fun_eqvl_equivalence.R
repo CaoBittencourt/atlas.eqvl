@@ -10,13 +10,13 @@ fun_eqvl_equivalence <- function(
     , dbl_scale_ub = NULL
     , dbl_scaling = 1
 ){
-
+  
   # Argument validation
   stopifnot(
     "'dbl_var' must be a numeric vector or matrix." =
       is.numeric(dbl_var)
   )
-
+  
   stopifnot(
     "'dbl_scale_lb' must be either NULL or numeric." =
       any(
@@ -24,7 +24,7 @@ fun_eqvl_equivalence <- function(
         , is.null(dbl_scale_lb)
       )
   )
-
+  
   stopifnot(
     "'dbl_scale_ub' must be either NULL or numeric." =
       any(
@@ -32,7 +32,7 @@ fun_eqvl_equivalence <- function(
         , is.null(dbl_scale_ub)
       )
   )
-
+  
   stopifnot(
     "'dbl_scaling' must be a non-negative number." =
       all(
@@ -40,13 +40,13 @@ fun_eqvl_equivalence <- function(
         , dbl_scaling >= 0
       )
   )
-
+  
   # Normalize data to percentage scale
   if(all(
     length(dbl_scale_lb),
     length(dbl_scale_ub)
   )){
-
+    
     # Normalize by scale bounds
     dbl_var / (
       dbl_scale_ub[[1]] -
@@ -56,42 +56,63 @@ fun_eqvl_equivalence <- function(
         dbl_scale_ub[[1]] -
           dbl_scale_lb[[1]]
       ) -> dbl_var
-
+    
   } else if(!all(
     max(dbl_var, na.rm = T) <= 1,
     min(dbl_var, na.rm = T) >= 0
   )){
-
+    
     # Normalize by maxima
     dbl_var /
       max(
         dbl_var
         , na.rm = T
       ) -> dbl_var
-
+    
   }
-
+  
   dbl_var[all(
     dbl_var <= 1,
     dbl_var >= 0
   )] -> dbl_var
-
+  
   # Calculate equivalence
-  dbl_var ^ (
-    (1 / dbl_var) ^ (
-      dbl_scaling[[1]] /
-        dbl_var
-    )
-  ) -> dbl_equivalence
-
-  # Truncate NA's
-  dbl_equivalence[
-    is.na(dbl_equivalence)
-  ] <- 0
-
+  dbl_var * (
+    1 +
+      dbl_scaling * (1 - dbl_var) *
+      exp(
+        -(dbl_var - dbl_scaling) * 
+          tan((pi/2) * (
+            cos((pi/2) * dbl_var * (1 - dbl_scaling))
+          ) ^ (1 - dbl_scaling))
+      )
+  ) ^ (-dbl_scaling / dbl_var) ->
+    dbl_equivalence
+  
+  # dbl_var * (
+  #   1 +
+  #     dbl_scaling * (1 - dbl_var) *
+  #     exp(
+  #       -(
+  #         (dbl_var - dbl_scaling) #/ (
+  #         #   dbl_var * (1 - dbl_scaling)
+  #         # )
+  #       ) * 
+  #         tan(
+  #           (pi/2) * (
+  #             cos((pi/2) * dbl_var * (1 - dbl_scaling))
+  #             
+  #           # ))
+  #       ) ^ (1 - dbl_scaling))
+  #       # ) ^ (dbl_scaling * (1 - dbl_scaling)))
+  #       # ) ^ ((1 - dbl_scaling) ^ 3))
+  #     )
+  # ) ^ (-dbl_scaling / dbl_var) ->
+  #   dbl_equivalence
+  
   # Output
   return(dbl_equivalence)
-
+  
 }
 
 # # [TEST] ------------------------------------------------------------------
