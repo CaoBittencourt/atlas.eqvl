@@ -30,15 +30,15 @@ fun_eqvl_equivalence <- function(
     dbl_var
     , dbl_scale_lb = NULL
     , dbl_scale_ub = NULL
-    , dbl_scaling = 1
+    , dbl_scaling = 0.5
 ){
-  
+
   # Argument validation
   stopifnot(
     "'dbl_var' must be a numeric vector or matrix." =
       is.numeric(dbl_var)
   )
-  
+
   stopifnot(
     "'dbl_scale_lb' must be either NULL or numeric." =
       any(
@@ -46,7 +46,7 @@ fun_eqvl_equivalence <- function(
         , is.null(dbl_scale_lb)
       )
   )
-  
+
   stopifnot(
     "'dbl_scale_ub' must be either NULL or numeric." =
       any(
@@ -54,7 +54,7 @@ fun_eqvl_equivalence <- function(
         , is.null(dbl_scale_ub)
       )
   )
-  
+
   stopifnot(
     "'dbl_scaling' must be a non-negative number." =
       all(
@@ -62,13 +62,13 @@ fun_eqvl_equivalence <- function(
         , dbl_scaling >= 0
       )
   )
-  
+
   # Normalize data to percentage scale
   if(all(
     length(dbl_scale_lb),
     length(dbl_scale_ub)
   )){
-    
+
     # Normalize by scale bounds
     dbl_var / (
       dbl_scale_ub[[1]] -
@@ -78,33 +78,33 @@ fun_eqvl_equivalence <- function(
         dbl_scale_ub[[1]] -
           dbl_scale_lb[[1]]
       ) -> dbl_var
-    
+
   } else if(!all(
     max(dbl_var, na.rm = T) <= 1,
     min(dbl_var, na.rm = T) >= 0
   )){
-    
+
     # Normalize by maxima
     dbl_var /
       max(
         dbl_var
         , na.rm = T
       ) -> dbl_var
-    
+
   }
-  
+
   dbl_var[all(
     dbl_var <= 1,
     dbl_var >= 0
   )] -> dbl_var
-  
+
   # Define variable and midpoint
   dbl_var -> x
   rm(dbl_var)
-  
+
   dbl_scaling -> m
   rm(dbl_scaling)
-  
+
   # Calculate equivalence
   fun_eqvl_logistic(
     x = x,
@@ -113,14 +113,21 @@ fun_eqvl_equivalence <- function(
     k = x,
     c = 1,
     q = m * (1 - x),
-    b = tan((pi/2) * cos((pi/2) * x * (1 - m))),
-    # b = tan((pi/2) * (cos((pi/2) * x * (1 - m)) ^ (1 - m))),
-    nu = x / m
+    nu = x / m,
+    # b = 1 / (x * (1 - m)) #nope
+    b = 1 / (1 - m)
+    # b = tan(acos(x * (1 - m))) 
+    # b = tan((pi/2) * m)
+    # b = tan((pi/2) * m * (1 - x))
+    # b = tan((pi/2) * m ^ x)
+    # b = 30 / (x * (1 - m)) #too specialized
+    # b = tan((pi/2) * cos((pi/2) * x * (1 - m))) #too specialized
+    # b = tan((pi/2) * (cos((pi/2) * x * (1 - m)) ^ (1 - m))) #too specialized
   ) -> dbl_equivalence
   
   # Output
   return(dbl_equivalence)
-  
+
 }
 
 # - Educational equivalence function --------------------------------------
