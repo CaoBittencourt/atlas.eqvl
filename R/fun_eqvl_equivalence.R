@@ -3,6 +3,28 @@
 # No packages required
 
 # [FUNCTIONS] ------------------------------------------
+# - Generalized logistic function -----------------------------------------
+fun_eqvl_logistic <- function(
+    x,
+    a = 0,
+    k = 1,
+    c = 1,
+    q = 1,
+    m = 0,
+    b = 1,
+    nu = 1
+){
+  
+  # Arguments validated in main functions
+  
+  # Generalized logistic function
+  y <- a + (k - a) / ((c + q * exp(-b * (x - m))) ^ (1 / nu))
+  
+  # output
+  return(y)
+  
+}
+
 # - Equivalence function ------------------------------------
 fun_eqvl_equivalence <- function(
     dbl_var
@@ -76,42 +98,85 @@ fun_eqvl_equivalence <- function(
     dbl_var >= 0
   )] -> dbl_var
   
-  # Calculate equivalence
-  dbl_var * (
-    1 +
-      dbl_scaling * (1 - dbl_var) *
-      exp(
-        -(dbl_var - dbl_scaling) * 
-          tan((pi/2) * (
-            cos((pi/2) * dbl_var * (1 - dbl_scaling))
-          ) ^ (1 - dbl_scaling))
-      )
-  ) ^ (-dbl_scaling / dbl_var) ->
-    dbl_equivalence
+  # Define variable and midpoint
+  dbl_var -> x
+  rm(dbl_var)
   
-  # dbl_var * (
-  #   1 +
-  #     dbl_scaling * (1 - dbl_var) *
-  #     exp(
-  #       -(
-  #         (dbl_var - dbl_scaling) #/ (
-  #         #   dbl_var * (1 - dbl_scaling)
-  #         # )
-  #       ) * 
-  #         tan(
-  #           (pi/2) * (
-  #             cos((pi/2) * dbl_var * (1 - dbl_scaling))
-  #             
-  #           # ))
-  #       ) ^ (1 - dbl_scaling))
-  #       # ) ^ (dbl_scaling * (1 - dbl_scaling)))
-  #       # ) ^ ((1 - dbl_scaling) ^ 3))
-  #     )
-  # ) ^ (-dbl_scaling / dbl_var) ->
-  #   dbl_equivalence
+  dbl_scaling -> m
+  rm(dbl_scaling)
+  
+  # Calculate equivalence
+  fun_eqvl_logistic(
+    x = x,
+    m = m,
+    a = 0,
+    k = x,
+    c = 1,
+    q = m * (1 - x),
+    # b = tan((pi/2) * cos((pi/2) * x * (1 - m))),
+    b = tan((pi/2) * (cos((pi/2) * x * (1 - m)) ^ (1 - m))),
+    nu = x / m
+  ) -> dbl_equivalence
   
   # Output
   return(dbl_equivalence)
+  
+}
+
+# - Educational equivalence function --------------------------------------
+fun_eqvl_equivalence_years <- function(
+    dbl_years,
+    dbl_years_min,
+    dbl_scaling = 0
+){
+  
+  # Arguments validation
+  stopifnot(
+    "'dbl_years' must be a non-negative number." =
+      all(
+        is.numeric(dbl_years),
+        dbl_years >= 0
+      )
+  )
+  
+  stopifnot(
+    "'dbl_years_min' must be a non-negative number." =
+      all(
+        is.numeric(dbl_years_min),
+        dbl_years_min >= 0
+      )
+  )
+  
+  stopifnot(
+    "'dbl_scaling' must be a number between 0 and 1." =
+      all(
+        is.numeric(dbl_scaling),
+        dbl_scaling >= 0,
+        dbl_scaling <= 1
+      )
+  )
+  
+  # Data wrangling
+  dbl_years[[1]] -> dbl_years
+  
+  dbl_years_min[[1]] -> dbl_years_min
+  
+  dbl_scaling[[1]] -> dbl_scaling
+  
+  # Apply logistic equivalence to years of education
+  fun_eqvl_logistic(
+    x = dbl_years,
+    a = 0,
+    k = 1,
+    c = 1,
+    q = 1,
+    m = dbl_years_min,
+    b = dbl_years_min / (1 - dbl_scaling),
+    nu = 1
+  ) -> dbl_equivalence_edu
+  
+  # Output
+  return(dbl_equivalence_edu)
   
 }
 
