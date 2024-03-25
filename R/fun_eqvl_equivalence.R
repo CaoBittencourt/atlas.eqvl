@@ -113,8 +113,8 @@ fun_eqvl_equivalence <- function(
     k = x,
     c = 1,
     q = m * (1 - x),
-    # b = tan((pi/2) * cos((pi/2) * x * (1 - m))),
-    b = tan((pi/2) * (cos((pi/2) * x * (1 - m)) ^ (1 - m))),
+    b = tan((pi/2) * cos((pi/2) * x * (1 - m))),
+    # b = tan((pi/2) * (cos((pi/2) * x * (1 - m)) ^ (1 - m))),
     nu = x / m
   ) -> dbl_equivalence
   

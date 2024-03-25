@@ -1,7 +1,7 @@
 Package: atlas.eqvl
 Type: Package
 Title: A Multi-Purpose Equivalence Estimator
-Version: 2.1.1
+Version: 2.1.2
 Author: Cao Bittencourt
 Maintainer: Cao Bittencourt <caobittencourt@gmail.com>
 Description: This simple package provides a statistical metric of equivalence.
