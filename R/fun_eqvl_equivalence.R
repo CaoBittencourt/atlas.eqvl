@@ -72,6 +72,10 @@ fun_eqvl_bin <- function(
     dbl_threshold ->
     dbl_var_bin
   
+  as.numeric(
+    dbl_var_bin
+  ) -> dbl_var_bin
+  
   # output
   return(dbl_var_bin)
   
