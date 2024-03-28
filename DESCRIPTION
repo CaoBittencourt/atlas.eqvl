@@ -1,10 +1,10 @@
 Package: atlas.eqvl
 Type: Package
-Title: A Multi-Purpose Equivalence Estimator
-Version: 2.2.0
+Title: Equivalence Estimators for Quantitative Career Matching
+Version: 3.0.0
 Author: Cao Bittencourt
 Maintainer: Cao Bittencourt <caobittencourt@gmail.com>
-Description: This simple package provides a statistical metric of equivalence.
+Description: This simple package provides statistical metrics of equivalence.
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
