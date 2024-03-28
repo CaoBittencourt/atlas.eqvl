@@ -198,12 +198,16 @@ fun_eqvl_attribute <- function(
   # normalize by scale's lb
   # and profile's max attribute
   dbl_profile / (
-    max(dbl_profile) -
-      dbl_scale_lb
+    max(
+      dbl_profile
+      , na.rm = T
+    ) - dbl_scale_lb
   ) -
     dbl_scale_lb / (
-      max(dbl_profile) -
-        dbl_scale_lb
+      max(
+        dbl_profile
+        , na.rm = T
+      ) - dbl_scale_lb
     ) -> dbl_profile
     
   rm(dbl_scale_lb)
@@ -218,14 +222,14 @@ fun_eqvl_attribute <- function(
   # calculate attribute equivalence
   # with generalized logistic function
   fun_eqvl_logistic(
-    x,
+    x = x,
+    m = m,
     a = 0,
     k = x,
     c = 1,
     q = m * (1 - x),
-    m = m,
-    b = 1 / (1 - m),
-    nu = x / m
+    nu = x / m,
+    b = 1 / (1 - m)
   ) -> dbl_attribute_eqvl
   
   rm(x, m)
