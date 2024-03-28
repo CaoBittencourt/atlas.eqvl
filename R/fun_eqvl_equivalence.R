@@ -25,6 +25,58 @@ fun_eqvl_logistic <- function(
   
 }
 
+# - Binary indicator variable ---------------------------------------------
+fun_eqvl_bin <- function(
+    dbl_var_eqvl,
+    dbl_threshold = 0.5
+){
+  
+  # arguments validation
+  stopifnot(
+    "'dbl_var_eqvl' must be a numeric vector of equivalence scores between 0 and 1." = 
+      any(
+        is.na(dbl_var_eqvl),
+        all(
+          is.numeric(dbl_var_eqvl)
+          , dbl_var_eqvl >= 0
+          , dbl_var_eqvl <= 1
+        )
+      )
+  )
+  
+  stopifnot(
+    "'dbl_threshold' must be a numeric vector of binary indicator thresholds between 0 and 1 the same length as 'dbl_var_eqvl'." = 
+      any(
+        is.na(dbl_threshold),
+        all(
+          is.numeric(dbl_threshold)
+          , dbl_threshold >= 0
+          , dbl_threshold <= 1
+        )
+      )
+  )
+  
+  # data wrangling
+  if(
+    length(dbl_threshold) != 
+    length(dbl_var_eqvl) 
+  ){
+    
+    dbl_threshold[[1]] ->
+      dbl_threshold
+    
+  }
+  
+  # calculate binary indicator
+  dbl_var_eqvl >= 
+    dbl_threshold ->
+    dbl_var_bin
+  
+  # output
+  return(dbl_var_bin)
+  
+}
+
 # - Equivalence function ------------------------------------
 fun_eqvl_equivalence <- function(
     dbl_var
