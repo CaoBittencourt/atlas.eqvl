@@ -208,7 +208,7 @@ fun_eqvl_equivalence <- function(
 
 # # - Attribute equivalence function ----------------------------------------
 # fun_eqvl_attribute <- function(
-#     dbl_profile,
+    #     dbl_profile,
 #     dbl_midpoint,
 #     dbl_scale_lb = 0
 # ){
@@ -303,14 +303,10 @@ fun_eqvl_attribute <- function(
   
   # arguments validation
   stopifnot(
-    "'dbl_profile' must be a numeric vector of professional attributes greater or equal to 'dbl_scale_lb'." = 
+    "'dbl_profile' must be a numeric vector of professional attributes." = 
       any(
         is.na(dbl_profile),
-        all(
-          is.numeric(dbl_profile)
-          , dbl_profile >= 
-            dbl_scale_lb
-        )
+        is.numeric(dbl_profile)
       )
   )
   
@@ -334,7 +330,7 @@ fun_eqvl_attribute <- function(
     dbl_profile
     , na.rm = T
   ) -> dbl_profile
-    
+  
   # define variable and midpoint
   dbl_profile -> x
   rm(dbl_profile)
