@@ -406,7 +406,7 @@ fun_eqvl_years <- function(
   # calculate tau (education + xp) equivalence
   # with generalized logistic function
   fun_eqvl_logistic(
-    x = dbl_years,
+    x = 1 + dbl_years,
     a = 0,
     k = 1,
     c = 1,
