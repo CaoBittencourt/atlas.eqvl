@@ -206,11 +206,99 @@ fun_eqvl_equivalence <- function(
   
 }
 
+# # - Attribute equivalence function ----------------------------------------
+# fun_eqvl_attribute <- function(
+#     dbl_profile,
+#     dbl_midpoint,
+#     dbl_scale_lb = 0
+# ){
+#   
+#   # arguments validation
+#   stopifnot(
+#     "'dbl_profile' must be a numeric vector of professional attributes greater or equal to 'dbl_scale_lb'." = 
+#       any(
+#         is.na(dbl_profile),
+#         all(
+#           is.numeric(dbl_profile)
+#           , dbl_profile >= 
+#             dbl_scale_lb
+#         )
+#       )
+#   )
+#   
+#   stopifnot(
+#     "'dbl_midpoint' must be a scalar between 0 and 1 of indicating the midpoint for calculating equivalence." = 
+#       any(
+#         is.na(dbl_midpoint),
+#         all(
+#           is.numeric(dbl_midpoint)
+#           , dbl_midpoint >= 0
+#           , dbl_midpoint <= 1
+#         )
+#       )
+#   )
+#   
+#   stopifnot(
+#     "'dbl_scale_lb' must be a scalar of indicating the scale's lower bound." = 
+#       any(
+#         is.na(dbl_scale_lb),
+#         is.numeric(dbl_scale_lb)
+#       )
+#   )
+#   
+#   # data wrangling
+#   dbl_midpoint[[1]] -> dbl_midpoint
+#   
+#   dbl_scale_lb[[1]] -> dbl_scale_lb
+#   
+#   # normalize by scale's lb
+#   # and profile's max attribute
+#   dbl_profile / (
+#     max(
+#       dbl_profile
+#       , na.rm = T
+#     ) - dbl_scale_lb
+#   ) -
+#     dbl_scale_lb / (
+#       max(
+#         dbl_profile
+#         , na.rm = T
+#       ) - dbl_scale_lb
+#     ) -> dbl_profile
+#     
+#   rm(dbl_scale_lb)
+#   
+#   # define variable and midpoint
+#   dbl_profile -> x
+#   rm(dbl_profile)
+#   
+#   dbl_midpoint -> m
+#   rm(dbl_midpoint)
+#   
+#   # calculate attribute equivalence
+#   # with generalized logistic function
+#   fun_eqvl_logistic(
+#     x = x,
+#     m = m,
+#     a = 0,
+#     k = x,
+#     c = 1,
+#     q = m * (1 - x),
+#     nu = x / m,
+#     b = 1 / (1 - m)
+#   ) -> dbl_attribute_eqvl
+#   
+#   rm(x, m)
+#   
+#   # output
+#   return(dbl_attribute_eqvl)
+#   
+# }
+
 # - Attribute equivalence function ----------------------------------------
 fun_eqvl_attribute <- function(
     dbl_profile,
-    dbl_midpoint,
-    dbl_scale_lb = 0
+    dbl_midpoint
 ){
   
   # arguments validation
@@ -238,36 +326,15 @@ fun_eqvl_attribute <- function(
       )
   )
   
-  stopifnot(
-    "'dbl_scale_lb' must be a scalar of indicating the scale's lower bound." = 
-      any(
-        is.na(dbl_scale_lb),
-        is.numeric(dbl_scale_lb)
-      )
-  )
-  
   # data wrangling
   dbl_midpoint[[1]] -> dbl_midpoint
   
-  dbl_scale_lb[[1]] -> dbl_scale_lb
-  
-  # normalize by scale's lb
-  # and profile's max attribute
-  dbl_profile / (
-    max(
-      dbl_profile
-      , na.rm = T
-    ) - dbl_scale_lb
-  ) -
-    dbl_scale_lb / (
-      max(
-        dbl_profile
-        , na.rm = T
-      ) - dbl_scale_lb
-    ) -> dbl_profile
+  # normalize profile's max attribute
+  dbl_profile / max(
+    dbl_profile
+    , na.rm = T
+  ) -> dbl_profile
     
-  rm(dbl_scale_lb)
-  
   # define variable and midpoint
   dbl_profile -> x
   rm(dbl_profile)
